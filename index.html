@@ -149,6 +149,19 @@ h1 {
 <script>
   const voice = document.getElementById('voice');
   const bruno = document.getElementById('bruno');
+  <audio id="voice" src="https://voca.ro/11ON2WRFBRY7" preload="auto"></audio>
+<audio id="bruno" src="count-on-me.mp3" preload="auto"></audio>
+
+<script>
+  const voice = document.getElementById('voice');
+  const bruno = document.getElementById('bruno');
+
+  voice.play();
+
+  voice.onended = () => {
+    bruno.play();
+  };
+</script>
 
   voice.play();
 
