@@ -268,3 +268,163 @@ h1 {
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8" />
+<title>بازی بادکنک تولد با مراحل و تایمر</title>
+<style>
+  body { background: #f0e9ff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: Arial, sans-serif; }
+  #gameArea { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+  .balloon {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  @keyframes floatUp {
+    0% { bottom: -100px; }
+    100% { bottom: 110vh; }
+  }
+  #scoreBoard, #timer {
+    position: fixed;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    background: rgba(255 255 255 / 0.8);
+    padding: 10px 15px;
+    border-radius: 10px;
+    user-select: none;
+  }
+  #scoreBoard { left: 10px; }
+  #timer { right: 10px; }
+  #gameOver {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 30px 50px;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    font-size: 28px;
+    display: none;
+    text-align: center;
+  }
+  #restartBtn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    font-size: 20px;
+    cursor: pointer;
+    background: #4a90e2;
+    border: none;
+    border-radius: 10px;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameArea"></div>
+
+<div id="scoreBoard">امتیاز: <span id="score">0</span></div>
+<div id="timer">زمان: <span id="timeLeft">30</span> ثانیه</div>
+
+<div id="gameOver">
+  بازی تموم شد!<br/>
+  امتیاز شما: <span id="finalScore"></span><br/>
+  <button id="restartBtn">شروع مجدد</button>
+</div>
+
+<script>
+  const gameArea = document.getElementById('gameArea');
+  const scoreDisplay = document.getElementById('score');
+  const timerDisplay = document.getElementById('timeLeft');
+  const gameOverScreen = document.getElementById('gameOver');
+  const finalScoreDisplay = document.getElementById('finalScore');
+  const restartBtn = document.getElementById('restartBtn');
+
+  let score = 0;
+  let timeLeft = 30;
+  let gameInterval;
+  let balloonInterval;
+  let difficultyLevel = 1;
+
+  function randomColor() {
+    const colors = ['#ff4b5c', '#ffb400', '#1fab89', '#4a90e2', '#bd10e0'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  function createBalloon() {
+    const balloon = document.createElement('div');
+    const size = Math.random() * 40 + 40; // 40px to 80px
+    balloon.classList.add('balloon');
+    balloon.style.width = size + 'px';
+    balloon.style.height = size + 'px';
+    balloon.style.backgroundColor = randomColor();
+    balloon.style.left = Math.random() * (window.innerWidth - size) + 'px';
+    balloon.style.bottom = '-100px';
+
+    // سرعت floatUp با توجه به مرحله سختی
+    const duration = 7 - difficultyLevel * 1.5; // کمتر میشه با مرحله بیشتر
+    balloon.style.animationDuration = Math.max(duration, 2) + 's';
+
+    balloon.addEventListener('click', () => {
+      score++;
+      scoreDisplay.textContent = score;
+      balloon.remove();
+    });
+
+    gameArea.appendChild(balloon);
+
+    setTimeout(() => {
+      balloon.remove();
+    }, 10000);
+  }
+
+  function startGame() {
+    score = 0;
+    timeLeft = 30;
+    difficultyLevel = 1;
+    scoreDisplay.textContent = score;
+    timerDisplay.textContent = timeLeft;
+    gameOverScreen.style.display = 'none';
+
+    balloonInterval = setInterval(createBalloon, 800);
+
+    gameInterval = setInterval(() => {
+      timeLeft--;
+      timerDisplay.textContent = timeLeft;
+
+      // افزایش سختی هر 10 ثانیه
+      if (timeLeft === 20) difficultyLevel = 2;
+      if (timeLeft === 10) difficultyLevel = 3;
+
+      if (timeLeft <= 0) {
+        endGame();
+      }
+    }, 1000);
+  }
+
+  function endGame() {
+    clearInterval(balloonInterval);
+    clearInterval(gameInterval);
+
+    // حذف همه بادکنک‌ها
+    document.querySelectorAll('.balloon').forEach(b => b.remove());
+
+    finalScoreDisplay.textContent = score;
+    gameOverScreen.style.display = 'block';
+  }
+
+  restartBtn.addEventListener('click', () => {
+    startGame();
+  });
+
+  // شروع بازی خودکار
+  startGame();
+</script>
+
+</body>
+</html>
