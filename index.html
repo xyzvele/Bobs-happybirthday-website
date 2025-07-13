@@ -268,14 +268,27 @@ h1 {
   </script>
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="fa">
+      <!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>بازی بادکنک تولد با مراحل و تایمر</title>
+<title>Balloon Popping Game with Timer and Levels</title>
 <style>
-  body { background: #f0e9ff; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: Arial, sans-serif; }
-  #gameArea { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+  body {
+    background: #f0e9ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  #gameArea {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
   .balloon {
     position: absolute;
     border-radius: 50%;
@@ -297,6 +310,7 @@ h1 {
     padding: 10px 15px;
     border-radius: 10px;
     user-select: none;
+    z-index: 1000;
   }
   #scoreBoard { left: 10px; }
   #timer { right: 10px; }
@@ -311,6 +325,7 @@ h1 {
     font-size: 28px;
     display: none;
     text-align: center;
+    z-index: 1001;
   }
   #restartBtn {
     margin-top: 20px;
@@ -328,13 +343,13 @@ h1 {
 
 <div id="gameArea"></div>
 
-<div id="scoreBoard">score: <span id="score">0</span></div>
-<div id="timer">time: <span id="timeLeft">30</span> second</div>
+<div id="scoreBoard">Score: <span id="score">0</span></div>
+<div id="timer">Time Left: <span id="timeLeft">30</span> seconds</div>
 
 <div id="gameOver">
-  game over!<br/>
-  your score: <span id="finalScore"></span><br/>
-  <button id="restartBtn">play again</button>
+  Game Over!<br/>
+  Your Score: <span id="finalScore"></span><br/>
+  <button id="restartBtn">Restart</button>
 </div>
 
 <script>
@@ -366,14 +381,14 @@ h1 {
     balloon.style.left = Math.random() * (window.innerWidth - size) + 'px';
     balloon.style.bottom = '-100px';
 
-    // سرعت floatUp با توجه به مرحله سختی
-    const duration = 7 - difficultyLevel * 1.5; // کمتر میشه با مرحله بیشتر
+    const duration = 7 - difficultyLevel * 1.5;
     balloon.style.animationDuration = Math.max(duration, 2) + 's';
 
     balloon.addEventListener('click', () => {
       score++;
       scoreDisplay.textContent = score;
       balloon.remove();
+      // You can add popping sound here if you want
     });
 
     gameArea.appendChild(balloon);
@@ -397,7 +412,6 @@ h1 {
       timeLeft--;
       timerDisplay.textContent = timeLeft;
 
-      // افزایش سختی هر 10 ثانیه
       if (timeLeft === 20) difficultyLevel = 2;
       if (timeLeft === 10) difficultyLevel = 3;
 
@@ -410,8 +424,6 @@ h1 {
   function endGame() {
     clearInterval(balloonInterval);
     clearInterval(gameInterval);
-
-    // حذف همه بادکنک‌ها
     document.querySelectorAll('.balloon').forEach(b => b.remove());
 
     finalScoreDisplay.textContent = score;
@@ -422,7 +434,6 @@ h1 {
     startGame();
   });
 
-  // شروع بازی خودکار
   startGame();
 </script>
 
