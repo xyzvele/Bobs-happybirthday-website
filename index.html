@@ -439,3 +439,92 @@ h1 {
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Balloon Popping Game - Working Version</title>
+<style>
+  body {
+    background: #f0e9ff;
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  #gameArea {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  .balloon {
+    position: absolute;
+    border-radius: 50%;
+    cursor: pointer;
+    animation-name: floatUp;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  @keyframes floatUp {
+    0% { bottom: -100px; }
+    100% { bottom: 110vh; }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+  .popped {
+    animation: pop 0.3s forwards;
+  }
+</style>
+</head>
+<body>
+<div id="gameArea"></div>
+
+<script>
+  const gameArea = document.getElementById('gameArea');
+
+  function randomColor() {
+    const colors = ['#ff4b5c', '#ffb400', '#1fab89', '#4a90e2', '#bd10e0'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
+
+  function createBalloon() {
+    const balloon = document.createElement('div');
+    const size = Math.random() * 40 + 40; // 40px to 80px
+    balloon.classList.add('balloon');
+    balloon.style.width = size + 'px';
+    balloon.style.height = size + 'px';
+    balloon.style.backgroundColor = randomColor();
+    balloon.style.left = Math.random() * (window.innerWidth - size) + 'px';
+    balloon.style.bottom = '-100px';
+    balloon.style.animationDuration = '7s';
+
+    balloon.addEventListener('click', () => {
+      balloon.classList.add('popped');
+      // Remove balloon after pop animation ends
+      balloon.addEventListener('animationend', () => {
+        balloon.remove();
+      }, { once: true });
+    });
+
+    gameArea.appendChild(balloon);
+
+    // Remove balloon after 10 seconds if not popped
+    setTimeout(() => {
+      if (gameArea.contains(balloon)) {
+        balloon.remove();
+      }
+    }, 10000);
+  }
+
+  // Create a balloon every 800 milliseconds
+  setInterval(createBalloon, 800);
+</script>
+</body>
+</html>
